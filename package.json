@@ -4,7 +4,7 @@
   "description": "A discord bot for dispensing items and other utilities",
   "main": "app.js",
   "scripts": {
-    "run": "node app.js",
+    "start": "node app.js",
     "lint": "eslint \"src/**\""
   },
   "author": "Aaron Freytag (Darkblizer)",
