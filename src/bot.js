@@ -1,6 +1,7 @@
 /** @module bot */
 const Discord = require("discord.js");
 
+/** The entire bot, knows how to log in and respond to things all by itself */
 module.exports = class Bot {
     /**
         Initializes the bot, creating the client and preparing
