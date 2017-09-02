@@ -1,0 +1,18 @@
+{
+  "name": "ek-item-machine",
+  "version": "0.0.0",
+  "description": "A discord bot for dispensing items and other utilities",
+  "main": "app.js",
+  "scripts": {
+    "run": "node app.js",
+    "lint": "eslint \"src/**\""
+  },
+  "author": "Aaron Freytag (Darkblizer)",
+  "license": "GPL-3.0",
+  "dependencies": {
+    "discord.js": "^11.1.0"
+  },
+  "devDependencies": {
+    "eslint": "^4.5.0"
+  }
+}

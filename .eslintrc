@@ -1,0 +1,32 @@
+{
+    env: {
+        node: true
+    },
+    parserOptions: {
+        ecmaVersion: 6
+    },
+    rules: {
+        semi: "error",
+        no-dupe-keys: "error",
+        no-sparse-arrays: "error",
+        no-delete-var: "error",
+        no-undef: "error",
+        constructor-super: "error",
+        no-dupe-class-members: "error",
+        no-invalid-this: "error",
+        use-isnan: "error",
+        no-invalid-regexp: "error",
+        global-require: "error",
+        no-var: "warn",
+        no-unused-vars: "warn",
+        brace-style: ["warn", "stroustrup"],
+        indent: ["warn", 4],
+        no-magic-numbers: "warn",
+        no-unreachable: "warn",
+        no-duplicate-case: "warn",
+        quotes: ["warn", "double"],
+        no-cond-assign: "warn",
+        max-len: "warn",
+        valid-jsdoc: "warn"
+    }
+}
