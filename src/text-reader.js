@@ -14,4 +14,4 @@ module.exports = class TextReader {
                 return Promise.resolve(lines[Math.floor(Math.random() * lines.length)]);
             });
     }
-}
+};
