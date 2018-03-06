@@ -1,6 +1,7 @@
 {
     env: {
-        node: true
+        node: true,
+        es6: true
     },
     parserOptions: {
         ecmaVersion: 6
@@ -26,7 +27,7 @@
         no-duplicate-case: "warn",
         quotes: ["warn", "double"],
         no-cond-assign: "warn",
-        max-len: "warn",
+        max-len: ["warn", 120],
         valid-jsdoc: "warn"
     }
 }

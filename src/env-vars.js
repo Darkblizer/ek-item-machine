@@ -6,6 +6,6 @@
 module.exports = {
     /** The token to log into discord */
     discordToken: process.env.ITEM_MACHINE_DISCORD_TOKEN,
-	/** The token to access dropbox */
-	dropboxToken: process.env.ITEM_MACHINE_DROPBOX_TOKEN
+    /** The token to access dropbox */
+    dropboxToken: process.env.ITEM_MACHINE_DROPBOX_TOKEN
 };

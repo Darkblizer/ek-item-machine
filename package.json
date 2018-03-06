@@ -13,12 +13,12 @@
     "node": ">=8.4.0 <9.0.0"
   },
   "dependencies": {
-    "decompress": "^4.2.0",
     "discord.js": "^11.3.0",
     "fs-extra": "^5.0.0",
     "got": "^8.2.0",
     "lodash": "^4.17.4",
-    "unzipper": "^0.8.11"
+    "streamifier": "^0.1.1",
+    "unzip": "^0.1.11"
   },
   "devDependencies": {
     "eslint": "^4.5.0"
