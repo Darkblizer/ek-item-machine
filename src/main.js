@@ -2,6 +2,7 @@
 const ItemMachine = require("./bot.js");
 const DropboxSync = require("./dropbox-sync.js");
 const EnvVars = require("./env-vars.js");
+const TextReader = require("./text-reader.js");
 const _ = require("lodash");
 /** Create the bot, and log into the server */
 /*
