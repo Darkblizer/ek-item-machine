@@ -58,6 +58,7 @@ module.exports = class DropboxSyncer {
     */
     updateOnChange(dbxPath, path, callback = () => {} ) {
         let backoff = 0; // seconds
+        let timeout = 10; // seconds
         let msPerSec = 1000;
         let loop = (cursor) => {
             setTimeout(() => {
@@ -88,6 +89,9 @@ module.exports = class DropboxSyncer {
                     .catch((err) => {
                         console.log(err);
                         console.log(err.response.body);
+                        // We want to have some sort of timeout if there's an error
+                        backoff = timeout;
+                        return loop(cursor);
                     });
             }, backoff * msPerSec);
         };
