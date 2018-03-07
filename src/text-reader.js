@@ -10,7 +10,9 @@ module.exports = class TextReader {
     static readRandom(path) {
         return fs.readFile(path, "utf-8")
             .then((file) => {
-                let lines = file.split(/[\r\n]+/);
+                let lines = _.filter(file.split(/[\r\n]+/), (line) => {
+                    return line.length != 0;
+                });
                 return Promise.resolve(lines[Math.floor(Math.random() * lines.length)]);
             });
     }
