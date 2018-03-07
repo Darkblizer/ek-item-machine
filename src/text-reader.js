@@ -1,5 +1,6 @@
 /** @module text-reader */
 const fs = require("fs-extra");
+const _ = require("lodash");
 
 module.exports = class TextReader {
     /**
