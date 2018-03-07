@@ -6,17 +6,24 @@ const TextReader = require("./text-reader.js");
 const _ = require("lodash");
 const fs = require("fs-extra");
 
+let folder = null;
 let dbx = new DropboxSync(EnvVars.dropboxToken);
+
 fs.remove("./res");
-dbx.downloadAll("/EKMachineTest", "./res")
+fs.readJSON("./config.json")
+    .then((result) => {
+        folder = result.dropboxFolder;
+        return dbx.downloadAll(folder, "./res")
+    })
     .then((result) => {
         console.log("Files downloaded!");
         
         // Create the bot
         let im = new ItemMachine();
+        
 
         // Start the update loop for getting files from dropbox on change
-        dbx.updateOnChange("/EKMachineTest", "./res", (files) => {
+        dbx.updateOnChange(folder, "./res", (files) => {
             im.onUpdate(files);
         });
         
