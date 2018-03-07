@@ -1,0 +1,6 @@
+{
+    "!nitem": {
+        "file": "NinItems.txt",
+        "message": "A $l spawns in front of $n!"
+    }
+}

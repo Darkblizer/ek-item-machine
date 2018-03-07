@@ -5,35 +5,24 @@ const EnvVars = require("./env-vars.js");
 const TextReader = require("./text-reader.js");
 const _ = require("lodash");
 const fs = require("fs-extra");
-/** Create the bot, and log into the server */
-/*
-let im = new ItemMachine();
-im.login(EnvVars.discordToken);
-*/
+
 let dbx = new DropboxSync(EnvVars.dropboxToken);
 fs.remove("./res");
 dbx.downloadAll("/EKMachineTest", "./res")
     .then((result) => {
         console.log("Files downloaded!");
+        
+        // Create the bot
+        let im = new ItemMachine();
+
+        // Start the update loop for getting files from dropbox on change
         dbx.updateOnChange("/EKMachineTest", "./res", (files) => {
-            console.log("Files changed!"); 
-            _.each(files, (file) => {
-                let type = "UNKNOWN_OPERATION";
-                switch(file[".tag"]) {
-                case "file":
-                    type = "WROTE";
-                    break;
-                case "folder":
-                    type = "CREATED";
-                    break;
-                case "deleted":
-                    type = "DELETED";
-                    break;
-                }
-                console.log(type + " " + file.path_lower);
-            });
+            im.onUpdate(files);
         });
-        console.log("Now awaiting changes...");
+        
+        // Start the bot
+        im.login(EnvVars.discordToken);
+
     })
     .catch((err) => {
         console.log(err);

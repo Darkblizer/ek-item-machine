@@ -174,6 +174,10 @@ module.exports = class DropboxSyncer {
                 promises.push(fs.remove(localPath + filePath));
                 break;
             }
+            
+            // Now that we're done with it, just change the entry so it's based on the local path
+            entry.path_display = localPath + filePath;
+            entry.path_lower = entry.path_display.toLowerCase();
         });
         return Promise.all(promises)
             .then(() => {
