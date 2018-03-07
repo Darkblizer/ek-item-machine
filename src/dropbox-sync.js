@@ -57,7 +57,33 @@ module.exports = class DropboxSyncer {
             "include_mounted_folders": false
         })
             .then((result) => {
-                return this.updateFiles(result.body.entries, path, true);
+                return this.updateFiles(result.body.entries, path, true)
+                    .then((r) => {
+                        if (result.body.has_more) {
+                            return this.continueDownload(result.body.cursor, path)
+                        }
+                        return Promise.resolve(r);
+                    });
+            });
+    }
+    
+    /**
+        Continues downloading files if there are more from the list
+        Used by downloadAll
+        @param {string} cursor The cursor to get data from
+        @param {string} path The local path to download to
+        @return {Promise} A promise that resolves when all of the files have been downloaded
+    */
+    continueDownload(cursor, path) {
+        return this.rpc("files/list_folder/continue", { "cursor": cursor })
+            .then((result) => {
+                return this.updateFiles(result.body.entries, path, true)
+                    .then((r) => {
+                        if (result.body.has_more) {
+                            return this.continueDownload(result.body.cursor, path)
+                        }
+                        return Promise.resolve(r);
+                    });
             });
     }
     
@@ -94,7 +120,14 @@ module.exports = class DropboxSyncer {
                             return this.rpc("files/list_folder/continue", { "cursor": cursor })
                                 .then((listResult) => {
                                     cursor = listResult.body.cursor;
-                                    return this.updateFiles(listResult.body.entries, path, true);
+                                    return this.updateFiles(listResult.body.entries, path, true)
+                                        .then((r) => {
+                                            if (listResult.body.has_more) {
+                                                return this.continueDownload(listResult.body.cursor, path)
+                                            }
+                                            cursor = listResult.body.cursor;
+                                            return Promise.resolve(r);
+                                        })
                                 })
                                 .then((listResult) => {
                                     // Return to polling after downloading everything
