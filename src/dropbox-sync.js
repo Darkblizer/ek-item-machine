@@ -15,15 +15,15 @@ module.exports = class DropboxSyncer {
     constructor(tok) {
         this.accessToken = tok;
     }
-
+    
     /**
         Downloads a dropbox folder as a ZIP and unpacks it to a local folder
+        Previously named "downloadAll", but was superseded by a non-zip version
         @param {string} dbxPath The dropbox path to download from
         @param {string} path The local path to download to
-        @return {Promise} A promise that resolves with the paths that 
-        were updated
+        @return {Promise} A promise that resolves with the paths that were updated
     */
-    downloadAll(dbxPath, path) {
+    downloadZip(dbxPath, path) {
         return this.contentDownload("files/download_zip", { "path": dbxPath })
             .then((result) => {
                 return new Promise((resolve, reject) => {
@@ -38,6 +38,26 @@ module.exports = class DropboxSyncer {
                             reject(err);
                         });
                 });
+            });
+    }
+
+    /**
+        Downloads a dropbox folder into a local folder
+        @param {string} dbxPath The dropbox path to download from
+        @param {string} path The local path to download to
+        @return {Promise} A promise that resolves with the paths that were updated
+    */
+    downloadAll(dbxPath, path) {
+        return this.rpc("files/list_folder", {
+            "path": dbxPath,
+            "recursive": true,
+            "include_media_info": false,
+            "include_deleted": false,
+            "include_has_explicit_shared_members": false,
+            "include_mounted_folders": false
+        })
+            .then((result) => {
+                return this.updateFiles(result.body.entries, path, true);
             });
     }
     
@@ -74,7 +94,7 @@ module.exports = class DropboxSyncer {
                             return this.rpc("files/list_folder/continue", { "cursor": cursor })
                                 .then((listResult) => {
                                     cursor = listResult.body.cursor;
-                                    return this.updateFiles(listResult.body.entries, path);
+                                    return this.updateFiles(listResult.body.entries, path, true);
                                 })
                                 .then((listResult) => {
                                     // Return to polling after downloading everything
@@ -116,24 +136,42 @@ module.exports = class DropboxSyncer {
     /**
         Downloads multiple files from dropbox
         @param {Array} files The files to download, as retrieved from the dropbox API
-        @param {String} localPath The local path to downlaod the files to
+        @param {String} localPath The local path to download the files to
+        @param {boolean} [removeRootFolder] Whether to locally remove the files from the
+        shared folder they are contained within or not. Defaults to false
         @return {Promise} A promise that resolves to the file changes when all the files have been changed
     */
-    updateFiles(files, localPath) {
+    updateFiles(files, localPath, removeRootFolder = false) {
         let promises = [];
         _.forEach(files, (entry) => {
+            let filePath = entry.path_display;
+            if (removeRootFolder) {
+                filePath = filePath.replace(/(\/*.*?\/)(.*)/, (match, p1, p2) => {
+                    if (p1 != "/") {
+                        return "/" + p2;
+                    }
+                    else {
+                        return "";
+                    }
+                });
+                
+                if (filePath == "") {
+                    // This IS the root folder, don't make it again
+                    return;
+                }
+            }
             switch(entry[".tag"]) {
             case "file":
                 promises.push(this.contentDownload("files/download", { "path": entry.path_lower })
                     .then((downloadResult) => {
-                        return fs.outputFile(localPath + entry.path_lower, downloadResult.body, "binary");
+                        return fs.outputFile(localPath + filePath, downloadResult.body, "binary");
                     }));
                 break;
             case "folder":
-                promises.push(fs.ensureDir(localPath + entry.path_lower));
+                promises.push(fs.ensureDir(localPath + filePath));
                 break;
             case "deleted":
-                promises.push(fs.remove(localPath + entry.path_lower));
+                promises.push(fs.remove(localPath + filePath));
                 break;
             }
         });

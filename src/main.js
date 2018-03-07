@@ -4,12 +4,14 @@ const DropboxSync = require("./dropbox-sync.js");
 const EnvVars = require("./env-vars.js");
 const TextReader = require("./text-reader.js");
 const _ = require("lodash");
+const fs = require("fs-extra");
 /** Create the bot, and log into the server */
 /*
 let im = new ItemMachine();
 im.login(EnvVars.discordToken);
 */
 let dbx = new DropboxSync(EnvVars.dropboxToken);
+fs.remove("./res");
 dbx.downloadAll("/EKMachineTest", "./res")
     .then((result) => {
         console.log("Files downloaded!");
