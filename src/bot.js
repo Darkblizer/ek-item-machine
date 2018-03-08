@@ -162,7 +162,7 @@ module.exports = class Bot {
         @returns {string} The formatted string
     */
     formatString(str, msg, line) {
-        return str.replace(/\$(.)/, (match, p1) => {
+        return str.replace(/\$(.)/g, (match, p1) => {
             switch(p1) {
             case "l":
                 return line;
