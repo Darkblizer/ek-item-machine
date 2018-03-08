@@ -120,9 +120,13 @@ module.exports = class Bot {
         @returns {undefined}
     */
     onMessage(msg) {
-        let cmd = msg.content.replace(/(^.*?) /, (match, p1) => {
-            return "/" + p1;
-        });
+        let cmd = msg.content.match(/(^.*?) /);
+        if (cmd == null) {
+            cmd = msg.content;
+        }
+        else {
+            cmd = cmd[1];
+        }
         
         // Hard-coded commands with special behaviour
         if (cmd == "!lastupdate") {
@@ -174,10 +178,15 @@ module.exports = class Bot {
                 if (p1.match(/[123456789]/)) {
                     let i = parseInt(p1);
                     let words = msg.content.split(/ +/);
+
                     if (i < words.length) {
-                        return words[i];
+                        let nick = this.findUserByName(msg.channel, words[i]);
+                        if (_.isNull(nick)) {
+                            return words[i];
+                        }
+                        return "<@" + nick.id + ">";
                     }
-                    else if (i < this.commands[words[0]].paramDefaults.length) {
+                    else if (i - 1 < this.commands[words[0]].paramDefaults.length) {
                         return this.formatString(this.commands[words[0]].paramDefaults[i - 1], msg, line);
                     }
                     else {
@@ -188,6 +197,18 @@ module.exports = class Bot {
                 break;
             }
             return match;
+        });
+    }
+    
+    /**
+        Finds a user by their nickname or their username
+        @param {Channel} channel The channel to search in
+        @param {string} nick The nickname to search for
+        @returns The user if found, null if not found
+    */
+    findUserByName(channel, nick) {
+        return channel.members.find((member) => {
+            return member.displayName == nick || member.user.username == nick;
         });
     }
     
