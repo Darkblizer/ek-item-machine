@@ -23,7 +23,6 @@ dbx.downloadAll(folder, "./res")
         
         // Create the bot
         let im = new ItemMachine();
-        
 
         // Start the update loop for getting files from dropbox on change
         dbx.updateOnChange(folder, "./res", (files) => {
