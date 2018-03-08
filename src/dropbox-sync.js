@@ -60,7 +60,7 @@ module.exports = class DropboxSyncer {
                 return this.updateFiles(result.body.entries, path, true)
                     .then((r) => {
                         if (result.body.has_more) {
-                            return this.continueDownload(result.body.cursor, path)
+                            return this.continueDownload(result.body.cursor, path);
                         }
                         return Promise.resolve(r);
                     });
@@ -80,7 +80,7 @@ module.exports = class DropboxSyncer {
                 return this.updateFiles(result.body.entries, path, true)
                     .then((r) => {
                         if (result.body.has_more) {
-                            return this.continueDownload(result.body.cursor, path)
+                            return this.continueDownload(result.body.cursor, path);
                         }
                         return Promise.resolve(r);
                     });
@@ -123,11 +123,11 @@ module.exports = class DropboxSyncer {
                                     return this.updateFiles(listResult.body.entries, path, true)
                                         .then((r) => {
                                             if (listResult.body.has_more) {
-                                                return this.continueDownload(listResult.body.cursor, path)
+                                                return this.continueDownload(listResult.body.cursor, path);
                                             }
                                             cursor = listResult.body.cursor;
                                             return Promise.resolve(r);
-                                        })
+                                        });
                                 })
                                 .then((listResult) => {
                                     // Return to polling after downloading everything

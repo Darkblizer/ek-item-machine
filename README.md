@@ -22,5 +22,6 @@ The bot features some built-in commands:
 Aside from the above commands, all commands are defined in the Commands.json, which is to be placed in the linked dropbox folder.
 The commands.json contains multiple commands by calling name, which contains information about the command:
 - `file`: The file to read a line from for the command
-- `message`: The message to read out when the command is called. `$l` is the line read from the file, and `$n` is the username of the person who called the command.
+- `message`: The message to read out when the command is called. `$l` is the line read from the file, and `$n` is the username of the person who called the command. `$$` is the character "$". `$1, $2, ... $9` are parameters specified by the user in the command call.
+- `paramDefaults`: An array of default parameters to use if the user does not specify one, beginning with parameter 1, 2, etc.
     

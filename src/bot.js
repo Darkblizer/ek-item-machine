@@ -146,15 +146,50 @@ module.exports = class Bot {
     runCommand(cmd, msg) {
         TextReader.readRandom("./res/" + this.commands[cmd].file)
             .then((line) => {
-                let output = this.commands[cmd].message
-                    .replace("$l", line.replace("\n", ""))
-                    .replace("$n", "<@" + msg.author.id + ">");
+                let output = this.formatString(this.commands[cmd].message, msg, line);
                 return msg.channel.send(output);
             })
             .catch((err) => {
                 this.log(err);
             });
-    }        
+    }   
+
+    /**
+        Formats a string to replace $_ with the appropriate values
+        @param {string} str The string to parse
+        @param {Message} msg The message which activated the command
+        @param {string} line The line selected by the command
+        @returns {string} The formatted string
+    */
+    formatString(str, msg, line) {
+        return str.replace(/\$(.)/, (match, p1) => {
+            switch(p1) {
+            case "l":
+                return line;
+            case "n":
+                return "<@" + msg.author.id + ">";
+            case "$":
+                return "$";
+            default:
+                if (p1.match(/[123456789]/)) {
+                    let i = parseInt(p1);
+                    let words = msg.content.split(/ +/);
+                    if (i < words.length) {
+                        return words[i];
+                    }
+                    else if (i < this.commands[words[0]].paramDefaults.length) {
+                        return this.formatString(this.commands[words[0]].paramDefaults[i - 1], msg, line);
+                    }
+                    else {
+                        // No specified param or default!!
+                        return "";
+                    }
+                }
+                break;
+            }
+            return match;
+        });
+    }
     
     /**
         Reports the time the last update to the dropbox occurred
