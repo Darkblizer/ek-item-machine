@@ -18,7 +18,7 @@ module.exports = class Bot {
                 this.setupCallbacks();
             })
             .catch((err) => {
-                console.log(err);
+                this.log(err);
             });
         this.lastUpdate = new Date(Date.now());
     }
@@ -30,7 +30,9 @@ module.exports = class Bot {
     loadCommands() {
         return fs.readJSON("./res/commands.json")
             .then((json) => {
-                this.commands = json;
+                this.commands = _.each(json, (command) => {
+                    command.file = command.file.toLowerCase();
+                });
             });
     }
     
@@ -155,6 +157,7 @@ module.exports = class Bot {
             })
             .catch((err) => {
                 this.log(err);
+                return msg.channel.send(err);
             });
     }   
 

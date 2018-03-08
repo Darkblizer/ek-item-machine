@@ -177,7 +177,7 @@ module.exports = class DropboxSyncer {
     updateFiles(files, localPath, removeRootFolder = false) {
         let promises = [];
         _.forEach(files, (entry) => {
-            let filePath = entry.path_display;
+            let filePath = entry.path_lower;
             if (removeRootFolder) {
                 filePath = filePath.replace(/(\/*.*?\/)(.*)/, (match, p1, p2) => {
                     if (p1 != "/") {
